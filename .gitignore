@@ -7,3 +7,4 @@ cache/
 *.dirs
 *.locale
 emacs/eln-cache/
+emacs/auto-save-list/
