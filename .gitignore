@@ -8,3 +8,7 @@ cache/
 *.locale
 emacs/eln-cache/
 emacs/auto-save-list/
+emacs/eshell/
+emacs/transient/
+emacs/tutorial/
+emacs/elpa/
