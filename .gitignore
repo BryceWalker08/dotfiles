@@ -6,3 +6,4 @@ cache/
 *.tmp
 *.dirs
 *.locale
+emacs/eln-cache/
