@@ -161,6 +161,12 @@
 
 (use-package org)
 
+(defun eshell/clear ()
+  "Clear the visible part of the Eshell buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer))
+  (eshell-send-input))
 
 
 
@@ -172,6 +178,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("8c7e832be864674c220f9a9361c851917a93f921fedb7717b1b5ece47690c098"
+     "7de64ff2bb2f94d7679a7e9019e23c3bf1a6a04ba54341c36e7cf2d2e56e2bcc"
+     default))
  '(package-selected-packages
    '(all-the-icons counsel-projectile doom-modeline doom-themes general
 		   helpful hydra ivy-rich magit magit-section
