@@ -1,4 +1,4 @@
-(load-theme 'doom-acario-dark t)
+(load-theme 'doom-dracula t)
 
 (setq inhibit-startup-message t)
 (scroll-bar-mode -1) ; Remove scrollbar on side
