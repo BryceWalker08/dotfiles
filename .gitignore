@@ -1,0 +1,8 @@
+# Ignore cache and temp files
+Cache/
+cache/
+*.swp
+*.bak
+*.tmp
+*.dirs
+*.locale
