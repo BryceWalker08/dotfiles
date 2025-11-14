@@ -153,13 +153,99 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
-(use-package magit
-  :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-ivy))
+(use-package magit)
+  ;:custom
+  ;(magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-ivy))
 
 (global-set-key (kbd "C-;") #'set-mark-command)
 
 (use-package org)
+
+(defun eshell/clear ()
+  "Clear the visible part of the Eshell buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer))
+  (eshell-send-input))
+
+;; vterm setup 
+(use-package vterm
+  :ensure t
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-shell "/bin/bash")
+
+  ;; Make vterm blend nicely with Doom Dracula and font setup
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (display-line-numbers-mode 0)
+              (setq-local global-hl-line-mode nil)
+              (setq-local cursor-type 'box)
+              (face-remap-add-relative 'default '(:font "JetBrainsMono Nerd Font-12"))
+              (face-remap-add-relative 'mode-line '(:font "JetBrainsMono Nerd Font-12"))
+              (setq-local buffer-face-mode-face '(:background "#1e1f29"))
+              (buffer-face-mode)
+              (doom-modeline-mode 1))))
+
+;; Create an "open" leader-key menu for launching tools
+(bryce/leader-keys
+  "o" '(nil :which-key "open")
+  "ot" '(vterm :which-key "open vterm"))
+
+;; ------------------------
+;; God Mode Configuration
+;; ------------------------
+(use-package god-mode
+  :ensure t
+  :diminish
+  :init
+  ;; Bind God Mode toggle to Hyper+F
+  (global-set-key (kbd "<H-f>") 'god-mode-all)
+  :config
+  ;; Optional: show a message when God Mode is activated/deactivated
+  (add-hook 'god-mode-enabled-hook
+            (lambda ()
+              (message "God Mode enabled")))
+  (add-hook 'god-mode-disabled-hook
+            (lambda ()
+              (message "God Mode disabled")))
+
+  ;; Doom-modeline integration
+  (defvar-local god-mode-modeline-string " GOD ")
+  
+  ;; Update modeline indicator when god-mode toggles
+  (defun update-god-mode-modeline ()
+    "Show GOD in doom-modeline when god-mode is active."
+    (setq god-mode-modeline-string
+          (if god-local-mode
+              (propertize " GOD " 'face `(:foreground "gold" :weight bold))
+            "")))
+
+  (add-hook 'god-mode-enabled-hook 'update-god-mode-modeline)
+  (add-hook 'god-mode-disabled-hook 'update-god-mode-modeline)
+
+  ;; Integrate with doom-modeline's minor mode section
+  (doom-modeline-def-segment god-mode-segment
+    "Display GOD when god-mode is active."
+    god-mode-modeline-string)
+
+  (doom-modeline-def-modeline 'main
+    '(bar workspace-name window-number modals matches buffer-info remote-host buffer-position parrot selection-info)
+    '(obj god-mode-segment misc-info persp-name battery grip irc mu4e github debug repl lsp minor-modes input-method major-mode process vcs checker))
+  
+  (defun setup-god-mode-doom-modeline ()
+    "Refresh doom-modeline to include God Mode segment."
+    (doom-modeline-set-modeline 'main t))
+  
+  (add-hook 'after-init-hook 'setup-god-mode-doom-modeline))
+
+
+
+
+
+
 
 
 
@@ -178,7 +264,7 @@
      default))
  '(package-selected-packages
    '(all-the-icons counsel-projectile doom-modeline doom-themes general
-		   helpful hydra ivy-rich magit magit-section
+		   god-mode helpful hydra ivy-rich magit magit-section
 		   rainbow-delimiters transient vterm with-editor)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

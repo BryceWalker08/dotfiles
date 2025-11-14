@@ -1,0 +1,185 @@
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org"   . "https://orgmode.org/elpa/")
+                         ("elpa"  . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+(load-theme 'doom-dracula t)
+
+(setq inhibit-startup-message t)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(set-fringe-mode 10)
+(setq visible-bell t)
+
+(add-to-list 'default-frame-alist '(font . "JetBrainsMono Nerd Font-12"))
+
+(when (fboundp 'set-frame-font)
+  (set-frame-font "JetBrainsMono Nerd Font-12" nil t))
+
+(when (display-graphic-p)
+  (dolist (face '(default mode-line mode-line-inactive menu tool-bar))
+    (set-face-attribute face nil :font "JetBrainsMono Nerd Font-12")))
+
+(column-number-mode)
+(global-display-line-numbers-mode t)
+
+(dolist (mode '(org-mode-hook term-mode-hook shell-mode-hook eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
+
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+         ("C-x b" . counsel-switch-buffer)
+         ("C-x C-b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history))
+  :config
+  (setq ivy-initial-inputs-alist nil))
+
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
+(use-package helpful
+  :custom
+  (counsel-descibe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
+(use-package all-the-icons)
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
+(use-package doom-themes)
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config (setq which-key-idle-delay 0.3))
+
+(use-package general
+  :config
+  (global-unset-key (kbd "C-SPC"))
+
+  (general-create-definer bryce/leader-keys
+    :keymaps 'global-map
+    :prefix "C-SPC")
+
+  (bryce/leader-keys
+   "M-t" '(counsel-load-theme :which-key "choose theme")))
+
+(defhydra hydra-text-scale (:timeout 4)
+  "scale text"
+  ("j" text-scale-increase "in")
+  ("k" text-scale-decrease "out")
+  ("f" nil "finished" :exit t))
+
+(bryce/leader-keys
+ "t" '(nil :which-key "text")
+ "ts" '(hydra-text-scale/body :which-key "scale text")
+ "[" '(previous-buffer :which-key "previous buffer")
+ "]" '(next-buffer :which-key "next buffer"))
+
+;; Add C-;
+(global-set-key (kbd "C-;") #'set-mark-command)
+
+(use-package projectile
+       :diminish projectile-mode
+       :config (projectile-mode)
+       :custom ((projectile-completion-system 'ivy))
+       :bind-keymap ("C-c p" . projectile-command-map)
+       :init
+       (when (file-directory-p "~/Projects/Code")
+         (setq projectile-project-search-path '("~/Projects/Code")))
+       (setq projectile-switch-project-action #'projectile-dired))
+
+     (use-package counsel-projectile
+       :config (counsel-projectile-mode))
+
+     (use-package magit)
+
+(use-package org
+  :ensure t)
+     (use-package org-make-toc
+      :after org
+    :hook (org-mode . org-make-toc-mode))
+(add-hook 'org-mode-hook 'org-make-toc-mode)
+
+(defun eshell/clear ()
+  "Clear the visible part of the Eshell buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer))
+  (eshell-send-input))
+
+(use-package vterm
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000)
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-shell "/bin/bash")
+
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (display-line-numbers-mode 0)
+              (setq-local global-hl-line-mode nil)
+              (setq-local cursor-type 'box)
+              (face-remap-add-relative 'default '(:font "JetBrainsMono Nerd Font-12"))
+              (face-remap-add-relative 'mode-line '(:font "JetBrainsMono Nerd Font-12"))
+              (setq-local buffer-face-mode-face '(:background "#1e1f29"))
+              (buffer-face-mode)
+              (doom-modeline-mode 1))))
+
+(bryce/leader-keys
+ "o" '(nil :which-key "open")
+ "ot" '(vterm :which-key "open vterm"))
+
+(use-package god-mode
+  :ensure t
+  :diminish
+  :bind
+  ("H-f" . god-mode-all)
+  :config
+  (add-hook 'god-mode-enabled-hook
+            (lambda () (message "God Mode enabled")))
+  (add-hook 'god-mode-disabled-hook
+            (lambda () (message "God Mode disabled"))))
+
+;; Fix god-local-mode-map undefined issue
+(with-eval-after-load 'god-mode
+  (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+  (define-key god-local-mode-map (kbd "]") #'forward-paragraph))
