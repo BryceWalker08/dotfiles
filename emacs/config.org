@@ -1,5 +1,5 @@
 #+TITLE: Brycemacs
-#+AUTHOR: Bryce Waker
+#+AUTHOR: Bryce Walker
 #+OPTIONS:
 #+STARTUP: overview
 #+PROPERTY: header-args:emacs-lisp :tangle yes
@@ -219,19 +219,22 @@
 
 * God Mode
 #+BEGIN_SRC emacs-lisp
-(use-package god-mode
-  :ensure t
-  :diminish
-  :bind
-  ("H-f" . god-mode-all)
-  :config
-  (add-hook 'god-mode-enabled-hook
-            (lambda () (message "God Mode enabled")))
-  (add-hook 'god-mode-disabled-hook
-            (lambda () (message "God Mode disabled"))))
+  (use-package god-mode
+    :ensure t
+    :diminish
+    :bind
+    ("H-f" . god-mode-all)
+    :config
+    (add-hook 'god-mode-enabled-hook
+              (lambda () (message "God Mode enabled")))
+    (add-hook 'god-mode-disabled-hook
+              (lambda () (message "God Mode disabled"))))
 
-;; Fix god-local-mode-map undefined issue
-(with-eval-after-load 'god-mode
-  (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
-  (define-key god-local-mode-map (kbd "]") #'forward-paragraph))
+  ;; Fix god-local-mode-map undefined issue
+  (with-eval-after-load 'god-mode
+    (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+    (define-key god-local-mode-map (kbd "]") #'forward-paragraph))
+  ;; Bind `t` to `magit-status` in God mode
+    (define-key god-local-mode-map (kbd "t") 'magit-status)
+
 #+END_SRC

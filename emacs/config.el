@@ -183,3 +183,5 @@
 (with-eval-after-load 'god-mode
   (define-key god-local-mode-map (kbd "[") #'backward-paragraph)
   (define-key god-local-mode-map (kbd "]") #'forward-paragraph))
+;; Bind `t` to `magit-status` in God mode
+  (define-key god-local-mode-map (kbd "t") 'magit-status)
