@@ -102,6 +102,9 @@
   (bryce/leader-keys
    "M-t" '(counsel-load-theme :which-key "choose theme")))
 
+(use-package hydra
+  :ensure t)
+
 (defhydra hydra-text-scale (:timeout 4)
   "scale text"
   ("j" text-scale-increase "in")

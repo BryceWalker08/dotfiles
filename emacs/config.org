@@ -133,31 +133,34 @@
 
 * Keybindings
 #+BEGIN_SRC emacs-lisp
-(use-package general
-  :config
-  (global-unset-key (kbd "C-SPC"))
+  (use-package general
+    :config
+    (global-unset-key (kbd "C-SPC"))
 
-  (general-create-definer bryce/leader-keys
-    :keymaps 'global-map
-    :prefix "C-SPC")
+    (general-create-definer bryce/leader-keys
+      :keymaps 'global-map
+      :prefix "C-SPC")
+
+    (bryce/leader-keys
+     "M-t" '(counsel-load-theme :which-key "choose theme")))
+
+  (use-package hydra
+    :ensure t)
+
+  (defhydra hydra-text-scale (:timeout 4)
+    "scale text"
+    ("j" text-scale-increase "in")
+    ("k" text-scale-decrease "out")
+    ("f" nil "finished" :exit t))
 
   (bryce/leader-keys
-   "M-t" '(counsel-load-theme :which-key "choose theme")))
+   "t" '(nil :which-key "text")
+   "ts" '(hydra-text-scale/body :which-key "scale text")
+   "[" '(previous-buffer :which-key "previous buffer")
+   "]" '(next-buffer :which-key "next buffer"))
 
-(defhydra hydra-text-scale (:timeout 4)
-  "scale text"
-  ("j" text-scale-increase "in")
-  ("k" text-scale-decrease "out")
-  ("f" nil "finished" :exit t))
-
-(bryce/leader-keys
- "t" '(nil :which-key "text")
- "ts" '(hydra-text-scale/body :which-key "scale text")
- "[" '(previous-buffer :which-key "previous buffer")
- "]" '(next-buffer :which-key "next buffer"))
-
-;; Add C-;
-(global-set-key (kbd "C-;") #'set-mark-command)
+  ;; Add C-;
+  (global-set-key (kbd "C-;") #'set-mark-command)
 #+END_SRC
 
 * Projectile / Magit / Org
