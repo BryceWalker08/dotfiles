@@ -188,3 +188,28 @@
   (define-key god-local-mode-map (kbd "]") #'forward-paragraph)
 ;; Bind `t` to `magit-status` in God mode
   (define-key god-local-mode-map (kbd "t") 'magit-status))
+
+(use-package haskell-mode
+  :ensure t
+  :hook ((haskell-mode . interactive-haskell-mode)
+	 (haskell-mode . flycheck-mode)
+	 (haskell-mode . company-mode)))
+;; LSP stuff w/ Haskell
+(use-package lsp-mode
+  :ensure t
+  :hook (haskell-mode . lsp)
+  :commands lsp)
+(use-package lsp-haskell
+  :ensure t
+  :after lsp-mode
+  :custom
+  (lsp-haskell-server-path "haskell-language-server-wrapper"))
+
+;; Autocomplete
+(use-package company
+  :ensure t
+  :config
+  (add-hook 'after-init-hook 'global-company-mode))
+
+(use-package flycheck
+  :ensure t)

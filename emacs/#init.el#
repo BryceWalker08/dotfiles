@@ -1,0 +1,56 @@
+;; init.el — bootstrap for config.org
+
+;; ----------------------------------------
+;; Package setup
+;; ----------------------------------------
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org"   . "https://orgmode.org/elpa/")
+                         ("elpa"  . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;; ----------------------------------------
+;; Load org-mode and enable tangling
+;; ----------------------------------------
+(require 'org)
+(require 'ob-tangle)
+
+;; Path to your org file and the resulting tangled elisp file
+(defvar my/config-org-file "~/.config/emacs/config.org"
+  "Main Emacs configuration Org file.")
+
+(defvar my/config-el-file "~/.config/emacs/config.el"
+  "Tangled Emacs Lisp file generated from config.org.")
+
+;; Function to tangle config.org automatically
+(defun my/tangle-config-org ()
+  "Tangle config.org to config.el if the org file has been modified."
+  (when (string-equal (buffer-file-name) (expand-file-name my/config-org-file))
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+
+;; Hook to auto-tangle on save
+(add-hook 'after-save-hook 'my/tangle-config-org)
+
+;; ----------------------------------------
+;; Load tangled config.el if it exists
+;; ----------------------------------------
+(when (file-exists-p my/config-el-file)
+  (load-file my/config-el-file))
+
+;; ----------------------------------------
+;; Optional: auto-tangle on startup in case config.org changed externally
+;; ----------------------------------------
+(with-temp-buffer
+  (insert-file-contents my/config-org-file)
+  (org-babel-tangle))
