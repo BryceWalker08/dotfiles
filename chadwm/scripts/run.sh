@@ -10,7 +10,8 @@ if [ -f "$HOME/.Xmodmap" ]; then
 	xmodmap "$HOME/.Xmodmap"
 fi
 xbindkeys &
-
+emacs --daemon &
 
 dash ~/.config/chadwm/scripts/bar.sh &
 while type chadwm >/dev/null; do chadwm && continue || break; done
+

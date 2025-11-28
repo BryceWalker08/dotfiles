@@ -1,1 +1,1 @@
-("~/.config/" "~/.config/chadwm/" "~/dwm-btw/")
+("~/.config/" "~/dwm-btw/" "~/.config/chadwm/")

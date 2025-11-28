@@ -198,6 +198,7 @@
 (use-package lsp-mode
   :ensure t
   :hook (haskell-mode . lsp)
+  (lua-mode . lsp)
   :commands lsp)
 (use-package lsp-haskell
   :ensure t
@@ -213,3 +214,9 @@
 
 (use-package flycheck
   :ensure t)
+
+(use-package lua-mode
+  :ensure t
+  :mode ("\\.lua\\'" . lua-mode)
+  :config
+  (setq lua-indent-level 2))

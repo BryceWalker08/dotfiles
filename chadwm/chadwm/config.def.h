@@ -37,6 +37,7 @@ static const char *light_down[] = {"/usr/bin/light", "-U", "5", NULL};
 static const int new_window_attach_on_end = 0; /*  1 means the new window will attach on the end; 0 means the new window will attach on the front,default is front */
 #define ICONSIZE 19   /* icon size */
 #define ICONSPACING 8 /* space between icon and title */
+#define BAR_HEIGHT 14
 
 static const char *fonts[]          = {"Iosevka:style:medium:size=12" ,"JetBrainsMono Nerd Font Mono:style:medium:size=19" };
 
@@ -134,7 +135,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static const char *lockcmd[] = { "slock", NULL };
-
+static const char *emacsclientcmd[] = { "emacsclient", "-c", "-n", NULL };
 
 static const Key keys[] = {
     /* modifier                         key         function        argument */
@@ -153,7 +154,7 @@ static const Key keys[] = {
         SHCMD("maim --select | xclip -selection clipboard -t image/png")},
 
     { MODKEY,                           XK_d,       spawn,          SHCMD("rofi -show drun") },
-    { MODKEY,                           XK_Return,  spawn,          SHCMD("st")},
+    { MODKEY,                           XK_Return,  spawn,          SHCMD("wezterm")},
 
     // toggle stuff
     { MODKEY,                           XK_b,       togglebar,      {0} },
@@ -165,7 +166,7 @@ static const Key keys[] = {
     { MODKEY,                           XK_j,       focusstack,     {.i = +1 } },
     { MODKEY,                           XK_k,       focusstack,     {.i = -1 } },
     { MODKEY,                           XK_i,       incnmaster,     {.i = +1 } },
-    { MODKEY,                           XK_d,       incnmaster,     {.i = -1 } },
+    { MODKEY,                           XK_y,       incnmaster,     {.i = -1 } },
 
     // shift view
     { MODKEY,                           XK_Left,    shiftview,      {.i = -1 } },
@@ -242,8 +243,11 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,                 XK_r,       restart,           {0} },
 
     // hide & restore windows
-    { MODKEY,                           XK_e,       hidewin,        {0} },
-    { MODKEY|ShiftMask,                 XK_e,       restorewin,     {0} },
+    { MODKEY,                           XK_v,       hidewin,        {0} },
+    { MODKEY|ShiftMask,                 XK_v,       restorewin,     {0} },
+
+    // emacs
+    { MODKEY, XK_e, spawn, {.v = emacsclientcmd } },
 
     TAGKEYS(                            XK_1,                       0)
     TAGKEYS(                            XK_2,                       1)
