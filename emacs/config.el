@@ -192,8 +192,13 @@
 (use-package haskell-mode
   :ensure t
   :hook ((haskell-mode . interactive-haskell-mode)
-	 (haskell-mode . flycheck-mode)
 	 (haskell-mode . company-mode)))
+
+(use-package exec-path-from-shell
+:ensure t
+:config
+(exec-path-from-shell-initialize))
+
 ;; LSP stuff w/ Haskell
 (use-package lsp-mode
   :ensure t
@@ -211,9 +216,6 @@
   :ensure t
   :config
   (add-hook 'after-init-hook 'global-company-mode))
-
-(use-package flycheck
-  :ensure t)
 
 (use-package lua-mode
   :ensure t

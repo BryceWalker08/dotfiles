@@ -1,1 +1,1 @@
-("~/.config/" "~/dwm-btw/" "~/.config/chadwm/")
+("~/.config/" "~/.slock-btw/" "~/dwm-btw/" "~/.config/chadwm/")
